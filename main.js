@@ -14,7 +14,8 @@ var aufgaben = [];
 
 
 let todoForm = document.getElementById('todo-form');
-let todoList = document.getElementById('')
+let todoList = document.getElementById('todo-liste');
+
 
 todoForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -27,12 +28,59 @@ todoForm.addEventListener('submit', (e) => {
 
     console.log(aufgaben);
 
+    while(todoList.firstChild){
+        todoList.removeChild(todoList.firstChild);
+    };
+
     aufgaben.forEach(aufgabe => {
         let li = document.createElement('li');
+        li.textContent = aufgabe.title;
+        
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.classList.add('checkobx');
+        checkbox.id = aufgabe.id;
 
-    })
+        let editButton = document.createElement('button');
+        editButton.textContent = 'Bearbeiten';
+        editButton.classList.add('buttons');
+        editButton.id = aufgabe.id;
+
+        let delButton = document.createElement('button');
+        delButton.textContent = 'Löschen';
+        delButton.classList.add('buttons');
+        delButton.id = aufgabe.id;
+
+        checkbox.addEventListener('change', (e) => {
+            let doneTask = aufgaben.find(aufgabe => aufgabe.id === parseInt(e.target.id))
+            
+            doneTask.done = true;
+        });
+
+        editButton.addEventListener('click', (e) => {
+            let editTask = aufgaben.find(aufgabe => aufgabe.id === parseInt(e.target.id));
+            
+            let id = editTask.id;
+
+            const newTitle = prompt('Gib einen neuen Titel ein:', '');
+
+            let listItem = document.querySelector('li#id');
+            console.log(listItem);
+        })
+
+
+
+        li.appendChild(checkbox);
+        li.appendChild(editButton);
+        li.appendChild(delButton);
+
+        todoList.appendChild(li);
+
+    });
     
     }
 )
+
+
 
 
