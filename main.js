@@ -1,86 +1,55 @@
-class Aufgabe {
-    constructor(id, title, done) {
-        this.id = id;
-        this.title = title;
-        this.done = done;
-    }
-
-    delete(id) {
-        console.log(`Task with ID ${id} has been deleted.`);
-    }
-}
-
-var aufgaben = [];
-
-
-let todoForm = document.getElementById('todo-form');
-let todoList = document.getElementById('todo-liste');
-
-
-todoForm.addEventListener('submit', (e) => {
+function addTodo(text) {
+    const todo = {
+      text,
+      done: false,
+      id: Date.now(),
+    }; //Funktion um todo Objekt zu erstellen
+  
+    var todos = [];
+  
+    
+  
+    todos.push(todo); //Objekte werden in ein Array gepusht
+    localStorage.setItem("savedTodos", JSON.stringify(todos)); //Das Array mit den Todo Objekten wird in den LocalStorage gespeichert
+    readTodos(); //Funktion um Objekte abzurufen und anzuzeigen wird aufgerufen
+  
+    console.log(todos);
+  }
+  
+  const todoForm = document.getElementById("todo-form");
+  const todoList = document.getElementById("todo-liste");
+  
+  todoForm.addEventListener("submit", function (e) {
     e.preventDefault();
-
-    let title = document.getElementById('todo-titel');
-    
-    let aufgabe = new Aufgabe(Math.round(Math.random()*100000), title.value, false);
-
-    aufgaben.push(aufgabe);
-
-    console.log(aufgaben);
-
-    while(todoList.firstChild){
-        todoList.removeChild(todoList.firstChild);
-    };
-
-    aufgaben.forEach(aufgabe => {
-        let li = document.createElement('li');
-        li.textContent = aufgabe.title;
-        
-        let checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.classList.add('checkobx');
-        checkbox.id = aufgabe.id;
-
-        let editButton = document.createElement('button');
-        editButton.textContent = 'Bearbeiten';
-        editButton.classList.add('buttons');
-        editButton.id = aufgabe.id;
-
-        let delButton = document.createElement('button');
-        delButton.textContent = 'Löschen';
-        delButton.classList.add('buttons');
-        delButton.id = aufgabe.id;
-
-        checkbox.addEventListener('change', (e) => {
-            let doneTask = aufgaben.find(aufgabe => aufgabe.id === parseInt(e.target.id))
-            
-            doneTask.done = true;
-        });
-
-        editButton.addEventListener('click', (e) => {
-            let editTask = aufgaben.find(aufgabe => aufgabe.id === parseInt(e.target.id));
-            
-            let id = editTask.id;
-
-            const newTitle = prompt('Gib einen neuen Titel ein:', '');
-
-            let listItem = document.querySelector('li#id');
-            console.log(listItem);
-        })
-
-
-
-        li.appendChild(checkbox);
-        li.appendChild(editButton);
-        li.appendChild(delButton);
-
-        todoList.appendChild(li);
-
-    });
-    
+    const input = document.getElementById("todo-titel");
+    const text = input.value.trim(); //Input wird von Whitespaces bereinigt
+  
+    if (text !== "") {
+      //Abfrage ob der Input einen Inhalt hat
+      addTodo(text); //Aufruf der Funktion um das todo Objekt zu erstellen
+      input.value = ""; //Leerung des Inputs
     }
-)
-
-
-
-
+  });
+  
+  function readTodos() {
+    const savedTodos = JSON.parse(localStorage.getItem("savedTodos")); //Gespeicherte Objekte werden aus den localStorage gefetcht
+  
+    savedTodos.forEach((todo) => {
+      //Template für die HTML Listen-Elemente
+      const todoEl = `<li class="task" id="${todo.id}"> 
+          <input type="checkbox" class="task-check" id="check">
+          <span id="todoname">${todo.text}</span>
+              <button class="edit" id="edit">
+                  Bearbeiten
+              </button>
+              <button class="delete" id="del">
+                  Entfernen
+              </button>
+          </li>`;
+  
+      todoList.insertAdjacentHTML("beforeend", todoEl); //Element wird immer am Ende des Listenelementes eingefügt
+    });
+  }
+  
+  
+  
