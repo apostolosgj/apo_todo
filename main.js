@@ -1,3 +1,10 @@
+const todoForm = document.getElementById("todo-form");
+const todoList = document.getElementById("todo-liste");
+
+const todos = [];
+
+readTodos();
+
 function addTodo(text) {
     const todo = {
       text,
@@ -5,19 +12,21 @@ function addTodo(text) {
       id: Date.now(),
     }; //Funktion um todo Objekt zu erstellen
   
-    var todos = [];
-  
-    
-  
     todos.push(todo); //Objekte werden in ein Array gepusht
-    localStorage.setItem("savedTodos", JSON.stringify(todos)); //Das Array mit den Todo Objekten wird in den LocalStorage gespeichert
+    writeToLocalStorage(); //Objekte im LocalSotrage speichern
     readTodos(); //Funktion um Objekte abzurufen und anzuzeigen wird aufgerufen
   
     console.log(todos);
   }
+
+function writeToLocalStorage(){
+    localStorage.setItem("savedTodos", JSON.stringify(todos)); //Das Array mit den Todo Objekten wird in den LocalStorage gespeichert
+    readTodos();
+}
+
   
-  const todoForm = document.getElementById("todo-form");
-  const todoList = document.getElementById("todo-liste");
+  
+ 
   
   todoForm.addEventListener("submit", function (e) {
     e.preventDefault();
@@ -32,24 +41,58 @@ function addTodo(text) {
   });
   
   function readTodos() {
-    const savedTodos = JSON.parse(localStorage.getItem("savedTodos")); //Gespeicherte Objekte werden aus den localStorage gefetcht
+    const savedTodos = JSON.parse(localStorage.getItem("savedTodos"));
+    todos.length = 0;
+    todos.push(...savedTodos);
   
-    savedTodos.forEach((todo) => {
-      //Template für die HTML Listen-Elemente
-      const todoEl = `<li class="task" id="${todo.id}"> 
-          <input type="checkbox" class="task-check" id="check">
-          <span id="todoname">${todo.text}</span>
-              <button class="edit" id="edit">
-                  Bearbeiten
-              </button>
-              <button class="delete" id="del">
-                  Entfernen
-              </button>
-          </li>`;
+    todoList.innerHTML = "";
   
-      todoList.insertAdjacentHTML("beforeend", todoEl); //Element wird immer am Ende des Listenelementes eingefügt
+    todos.forEach((todo) => {
+      const todoEl = document.createElement("li");
+      todoEl.className = "task";
+      todoEl.id = todo.id;
+      todoEl.innerHTML = `
+        <input type="checkbox" class="task-check" ${todo.done ? 'checked' : ''}>
+        <span id="todoname" class=" ${todo.done ? 'checked' : ''}">${todo.text}</span>
+        <button class="edit">Bearbeiten</button>
+        <button class="delete">Entfernen</button>
+      `;
+  
+      const deleteBtn = todoEl.querySelector('.delete');
+      deleteBtn.addEventListener('click', () => {
+        const todoId = todo.id;
+        const indexToDel = todos.findIndex(todo => todo.id === todoId);
+        todos.splice(indexToDel, 1);
+        writeToLocalStorage();
+        readTodos();
+      });
+  
+      const checkBox = todoEl.querySelector('.task-check');
+      checkBox.addEventListener('click', () => {
+        const todoId = todo.id;
+        const indexToCheck = todos.findIndex(todo => todo.id === todoId);
+        todos[indexToCheck].done = !todos[indexToCheck].done;
+        writeToLocalStorage();
+        readTodos();
+      });
+  
+      const editBtn = todoEl.querySelector('.edit');
+      editBtn.addEventListener('click', () => {
+        const todoId = todo.id;
+        const indexToEdit = todos.findIndex(todo => todo.id === todoId);
+        const newTitle = prompt('Bitte gib einen neuen Titel ein: ', todos[indexToEdit].text);
+        if (newTitle !== '') {
+          todos[indexToEdit].text = newTitle;
+          writeToLocalStorage();
+          readTodos();
+        }else{
+            alert('Bitte gib einen gültigen Titel ein')
+        }
+      });
+  
+      todoList.appendChild(todoEl);
     });
   }
-  
+
   
   
