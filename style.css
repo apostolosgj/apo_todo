@@ -21,7 +21,7 @@
 li {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0;
   margin: 5px;
 }
@@ -30,9 +30,8 @@ li button {
   margin: 10px;
 }
 
-
 button {
-  height: 50px;
+  height: 37px;
   border-style: double;
   border-color: black;
   background-color: #00a900;
@@ -47,27 +46,50 @@ button:hover {
 }
 
 input {
-  height: 45px;
+  height: 30px;
   border-color: rgba(0, 0, 0, 0.471);
   border-radius: 5px;
   margin: 5px;
+  flex-grow: 1;
 }
 
 .checked {
   text-decoration: line-through;
+  color: gray;
 }
 
 .task-check {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #4caf50;
-    border-radius: 0;
-    margin-right: 10px; 
+  width: 20px;
+  height: 20px;
+  border: 2px solid #4caf50;
+  border-radius: 0;
+  margin-right: 10px;
+  
 }
 
+
+
 .task-check:checked {
-    content: '\2713'; 
-    font-size: 18px;
-    color: #4caf50;
-    font-weight: bold;
+  content: "\2713";
+  font-size: 18px;
+  background-color: #4caf50;
+  font-weight: bold;
+}
+
+.todolist {
+  width: 500px;
+  height: 100vh;
+  background-color: white;
+  border-radius: 2px;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  overflow: inherit;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  background-color: aliceblue;
 }
